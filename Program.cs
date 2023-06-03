@@ -11,6 +11,11 @@ public class Program
         Console.WriteLine("Welcome to CsShell!");
         while (true)
         {
+            // Debug autocomplete 
+            Autocomplete autocomplete = new Autocomplete();
+            autocomplete.ElementsToRequest = 5;
+            Console.WriteLine(autocomplete.autocompleteResult(Directory.GetCurrentDirectory()));
+
             Console.Write(promt);
             string? input = Console.ReadLine();
             if (String.IsNullOrEmpty(input))

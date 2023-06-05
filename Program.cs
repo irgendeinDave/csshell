@@ -10,10 +10,10 @@ public class Program
 
         InputManager inputReader = new InputManager();
 
-        Console.Write(prompt);
-
         while (true)
         {
+            Console.Write(prompt);
+
             string? input = inputReader.readInput();
             if (String.IsNullOrEmpty(input))
                 continue;
@@ -41,13 +41,13 @@ public class Program
                 ProcessStartInfo psi = new ProcessStartInfo(programName);
                 psi.Arguments = arguments;
                 Console.WriteLine("running command");
-                Process.Start(psi);
+                Process.Start(psi).WaitForExit();
+
             }
             catch (Exception e)
             {
                 Console.WriteLine($"{programName} could not be executed: {e.Message}");
             }
-            Console.Write(prompt);
         }
     }
 

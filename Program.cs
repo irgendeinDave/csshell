@@ -6,25 +6,15 @@ public class Program
 
     public static void Main(String[] args)
     {
-        Console.WriteLine(Directory.GetCurrentDirectory());
         Console.WriteLine("Welcome to CsShell!");
 
         InputManager inputReader = new InputManager();
-        inputReader.readInput();
+
 
         while (true)
         {
-            // Debug autocomplete 
-            Autocomplete autocomplete = new Autocomplete();
-            autocomplete.ElementsToRequest = 5;
-            ConsoleKeyInfo cki = Console.ReadKey();
-            if (cki.Key == ConsoleKey.Tab)
-            {
-                Console.WriteLine("Tab");
-            }
-
             Console.Write(promt);
-            string? input = Console.ReadLine();
+            string? input = inputReader.readInput();
             if (String.IsNullOrEmpty(input))
                 continue;
 

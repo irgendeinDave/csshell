@@ -14,10 +14,9 @@ public class Autocomplete
     ///</summary>
     public string? autocompleteResult(string pwd)
     {
-        Console.WriteLine("DEBUG: " + pwd);
         List<string> files = Directory.EnumerateFiles(pwd).ToList<string>();
         if (files.Count == 1)
-            return files.ElementAt(0);
+            return relativePath(files.ElementAt(0), pwd);
         else if (files.Count == 0)
             return "";
         else
@@ -36,5 +35,10 @@ public class Autocomplete
             }
             return null;
         }
+    }
+
+    private string relativePath(string fullPath, string pwd)
+    {
+        return fullPath.Substring(pwd.Length + 1);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Text;
 
 public class Program
 {
@@ -9,12 +8,20 @@ public class Program
     {
         Console.WriteLine(Directory.GetCurrentDirectory());
         Console.WriteLine("Welcome to CsShell!");
+
+        InputManager inputReader = new InputManager();
+        inputReader.readInput();
+
         while (true)
         {
             // Debug autocomplete 
             Autocomplete autocomplete = new Autocomplete();
             autocomplete.ElementsToRequest = 5;
-            Console.WriteLine(autocomplete.autocompleteResult(Directory.GetCurrentDirectory()));
+            ConsoleKeyInfo cki = Console.ReadKey();
+            if (cki.Key == ConsoleKey.Tab)
+            {
+                Console.WriteLine("Tab");
+            }
 
             Console.Write(promt);
             string? input = Console.ReadLine();

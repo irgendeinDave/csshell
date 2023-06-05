@@ -2,7 +2,7 @@
 
 public class Program
 {
-    private static string promt = "$ ";
+    private static string prompt = "$ ";
 
     public static void Main(String[] args)
     {
@@ -10,10 +10,10 @@ public class Program
 
         InputManager inputReader = new InputManager();
 
+        Console.Write(prompt);
 
         while (true)
         {
-            Console.Write(promt);
             string? input = inputReader.readInput();
             if (String.IsNullOrEmpty(input))
                 continue;
@@ -40,13 +40,14 @@ public class Program
             {
                 ProcessStartInfo psi = new ProcessStartInfo(programName);
                 psi.Arguments = arguments;
+                Console.WriteLine("running command");
                 Process.Start(psi);
-                Console.WriteLine();
             }
             catch (Exception e)
             {
                 Console.WriteLine($"{programName} could not be executed: {e.Message}");
             }
+            Console.Write(prompt);
         }
     }
 
@@ -64,7 +65,7 @@ public class Program
             if (input.Substring(2, input.Length - 2) == "")
                 Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("HOME"));
             else
-                Directory.SetCurrentDirectory(input.Substring(3, input.Length - 3));
+                Directory.SetCurrentDirectory(input.Substring(3));
             return true;
         }
         else return false;

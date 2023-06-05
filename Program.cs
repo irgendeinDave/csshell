@@ -40,7 +40,6 @@ public class Program
             {
                 ProcessStartInfo psi = new ProcessStartInfo(programName);
                 psi.Arguments = arguments;
-                Console.WriteLine("running command");
                 Process.Start(psi).WaitForExit();
 
             }

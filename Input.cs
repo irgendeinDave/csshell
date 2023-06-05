@@ -30,22 +30,40 @@ public class InputManager
             }
             if (keyInfo.Key == ConsoleKey.Tab)
             {
-                List<string> split = new List<string>(currentCommand.ToString().Split(' '));
-                // if next argument hasn't started we have to append a new object to the end of the list
-                if (currentCommand.ToString()[currentCommand.ToString().Length - 1] == ' ')
-                    split.Add(" ");
-                string lastElementInSplit = split.ElementAt(split.Count - 1);
-                currentCommand.Replace(lastElementInSplit, ac.autocompleteResult(Directory.GetCurrentDirectory() + "/test"));
-#warning DEBUG 
-                List<string> newCommandSplit = new List<string>(currentCommand.ToString().Split(' '));
-                Console.Write(newCommandSplit.ElementAt(newCommandSplit.Count - 1).Substring(lastElementInSplit.Length));
+                string? autocomplete = ac.autocompleteResult(Directory.GetCurrentDirectory());
+                if (String.IsNullOrEmpty(autocomplete))
+                {
+                    Console.Write(currentCommand.ToString());
+                    continue;
+                }
+
+                try
+                {
+                    List<string> split = new List<string>(currentCommand.ToString().Split(' '));
+                    // if next argument hasn't started we have to append a new object to the end of the list
+                    if (currentCommand.ToString()[currentCommand.ToString().Length - 1] == ' ')
+                        split.Add(" ");
+                    string lastElementInSplit = split.ElementAt(split.Count - 1);
+                    currentCommand.Replace(lastElementInSplit, autocomplete);
+                    List<string> newCommandSplit = new List<string>(currentCommand.ToString().Split(' '));
+                    Console.Write(newCommandSplit.ElementAt(newCommandSplit.Count - 1).Substring(lastElementInSplit.Length));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("\n" + e.Message); // only for debugging purposes, probably
+                }
+            }
+            else if (keyInfo.Key == ConsoleKey.Backspace)
+            {
+                Console.Write("\b \b");
+                if (currentCommand.Length > 0)
+                    currentCommand.Length--;
             }
             else
             {
                 currentCommand.Append(keyInfo.KeyChar);
                 Console.Write(keyInfo.KeyChar);
             }
-
         }
     }
 }

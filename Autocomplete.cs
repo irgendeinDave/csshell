@@ -7,6 +7,7 @@ public class Autocomplete
         set { elementsToRequest = value; }
         get { return elementsToRequest; }
     }
+
     ///<summary>
     /// scan for available files in the working directory
     /// if there are multiple print out all available ones and return null
@@ -23,16 +24,17 @@ public class Autocomplete
         {
             if (files.Count > elementsToRequest)
             {
-                Console.Write($"{files.Count} elements found. Show them all (y/n): ");
-                string? answer = Console.ReadLine();
-                if (answer != "y")
+                Console.Write($"\n{files.Count} elements found. Show them all (y/n): ");
+                ConsoleKeyInfo answer = Console.ReadKey();
+                Console.WriteLine();
+                if (answer.Key != ConsoleKey.Y)
                     return null;
-
             }
             foreach (string element in files)
             {
-                Console.Write($"{element}   ");
+                Console.Write($"{relativePath(element, pwd)}   ");
             }
+            Console.WriteLine();
             return null;
         }
     }

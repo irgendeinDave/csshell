@@ -1,3 +1,4 @@
+namespace Autocompletion;
 
 public class Autocomplete
 {
@@ -8,35 +9,39 @@ public class Autocomplete
         get { return elementsToRequest; }
     }
 
+    private List<String> files = new List<string>();
+
+    public bool moreThanOneElement()
+    {
+        files = Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList<string>();
+        return files.Count > 1;
+    }
+
     ///<summary>
     /// scan for available files in the working directory
-    /// if there are multiple print out all available ones and return null
+    /// if there are multiple offer to print out all available ones and return an empty string
     /// else return the file name
     ///</summary>
-    public string? autocompleteResult(string pwd)
+    public string autocompleteResult(string commandStart)
     {
-        List<string> files = Directory.EnumerateFiles(pwd).ToList<string>();
-        if (files.Count == 1)
-            return relativePath(files.ElementAt(0), pwd);
-        else if (files.Count == 0)
-            return "";
-        else
+        string pwd = Directory.GetCurrentDirectory();
+        files = Directory.EnumerateFiles(pwd).ToList<string>();
+        List<String> matchingResults = new List<String>();
+
+        if (files.Count > elementsToRequest)
         {
-            if (files.Count > elementsToRequest)
-            {
-                Console.Write($"\n{files.Count} elements found. Show them all (y/n): ");
-                ConsoleKeyInfo answer = Console.ReadKey();
-                Console.WriteLine();
-                if (answer.Key != ConsoleKey.Y)
-                    return null;
-            }
-            foreach (string element in files)
-            {
-                Console.Write($"{relativePath(element, pwd)}   ");
-            }
+            Console.Write($"\n{files.Count} elements found. Show them all (y/n): ");
+            ConsoleKeyInfo answer = Console.ReadKey();
             Console.WriteLine();
-            return null;
+            if (answer.Key != ConsoleKey.Y)
+                return "";
         }
+        foreach (string element in files)
+        {
+            Console.Write($"{relativePath(element, pwd)}   ");
+        }
+        Console.WriteLine();
+        return "";
     }
 
     private string relativePath(string fullPath, string pwd)

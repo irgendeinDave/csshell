@@ -1,15 +1,12 @@
 using System.Text;
+using Autocompletion;
+
+namespace InputReader;
 
 public class InputManager
 {
     private StringBuilder currentCommand = new StringBuilder();
     private Autocomplete ac = new Autocomplete();
-    struct Input
-    {
-        string command;
-        string arguments;
-    }
-    private Input input = new Input();
 
     public InputManager()
     {
@@ -30,8 +27,8 @@ public class InputManager
             }
             if (keyInfo.Key == ConsoleKey.Tab)
             {
-                string? autocomplete = ac.autocompleteResult(Directory.GetCurrentDirectory());
-                if (String.IsNullOrEmpty(autocomplete))
+
+                if (!ac.moreThanOneElement())
                 {
                     Console.Write(currentCommand.ToString());
                     continue;
@@ -39,6 +36,11 @@ public class InputManager
 
                 try
                 {
+                    List<string> split = new List<string>(currentCommand.ToString().Split(' '));
+                    string lastElementInSplit = split.ElementAt(split.Count - 1);
+                    Console.WriteLine(lastElementInSplit);
+
+                    string autocomplete = ac.autocompleteResult(lastElementInSplit);
                     // simply append autocomplete suggestion when command ends in a space character
                     if (currentCommand.ToString()[currentCommand.ToString().Length - 1] == ' ')
                     {
@@ -47,8 +49,6 @@ public class InputManager
                         continue;
                     }
 
-                    List<string> split = new List<string>(currentCommand.ToString().Split(' '));
-                    string lastElementInSplit = split.ElementAt(split.Count - 1);
                     if (lastElementInSplit[0] == '-')
                         continue;
                     currentCommand.Replace(lastElementInSplit, autocomplete);
@@ -57,7 +57,7 @@ public class InputManager
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("\n" + e.Message); // only for debugging purposes, probably
+                    // ignore
                 }
             }
             else if (keyInfo.Key == ConsoleKey.Backspace)

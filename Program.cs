@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using InputReader;
 
 public class Program
 {
@@ -41,7 +42,6 @@ public class Program
                 ProcessStartInfo psi = new ProcessStartInfo(programName);
                 psi.Arguments = arguments;
                 Process.Start(psi).WaitForExit();
-
             }
             catch (Exception e)
             {
@@ -61,10 +61,18 @@ public class Program
         else if (substringUntilChar(input, ' ') == "cd")
         {
             Console.WriteLine(input.Substring(2, input.Length - 2));
-            if (input.Substring(2, input.Length - 2) == "")
-                Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("HOME"));
-            else
-                Directory.SetCurrentDirectory(input.Substring(3));
+            try
+            {
+                if (input.Substring(2, input.Length - 2) == "")
+                    Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("HOME"));
+                else
+                    Directory.SetCurrentDirectory(input.Substring(3));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
             return true;
         }
         else return false;

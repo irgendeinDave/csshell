@@ -63,7 +63,7 @@ public class Program
             Console.WriteLine(input.Substring(2, input.Length - 2));
             try
             {
-                if (input.Substring(2, input.Length - 2) == "")
+                if (input.Substring(2) == "")
                     Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("HOME"));
                 else
                     Directory.SetCurrentDirectory(input.Substring(3));

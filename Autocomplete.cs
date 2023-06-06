@@ -22,7 +22,7 @@ public class Autocomplete
     /// if there are multiple offer to print out all available ones and return an empty string
     /// else return the file name
     ///</summary>
-    public string autocompleteResult(string commandStart)
+    public string autocompleteResult(string commandStart, string currentCommand)
     {
         string pwd = Directory.GetCurrentDirectory();
         files = Directory.EnumerateFiles(pwd).ToList<string>();
@@ -41,23 +41,25 @@ public class Autocomplete
             return "";
         else
         {
+            Console.WriteLine();
             if (matchingResults.Count > elementsToRequest)
             {
                 Console.Write($"\n{matchingResults.Count} elements found. Show them all (y/n): ");
                 ConsoleKeyInfo answer = Console.ReadKey();
                 Console.WriteLine();
                 if (answer.Key != ConsoleKey.Y)
+                {
+                    Console.Write("\n$ " + currentCommand.ToString());
                     return "";
+                }
             }
             foreach (string element in matchingResults)
             {
                 Console.Write($"{relativePath(element, pwd)}   ");
             }
-            Console.WriteLine();
+            Console.Write("\n$ " + currentCommand.ToString());
             return "";
         }
-
-
     }
 
     private string relativePath(string fullPath, string pwd)

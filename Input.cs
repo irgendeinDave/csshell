@@ -27,14 +27,12 @@ public class InputManager
             }
             if (keyInfo.Key == ConsoleKey.Tab)
             {
-
                 try
                 {
                     List<string> split = new List<string>(currentCommand.ToString().Split(' '));
                     string lastElementInSplit = split.ElementAt(split.Count - 1);
-                    Console.WriteLine(lastElementInSplit);
 
-                    string autocomplete = ac.autocompleteResult(lastElementInSplit);
+                    string autocomplete = ac.autocompleteResult(lastElementInSplit, currentCommand.ToString());
                     // simply append autocomplete suggestion when command ends in a space character
                     if (currentCommand.ToString()[currentCommand.ToString().Length - 1] == ' ')
                     {
@@ -44,12 +42,19 @@ public class InputManager
                     }
 
                     if (lastElementInSplit[0] == '-')
+                    {
+                        if (lastElementInSplit.Length == 1)
+                        {
+                            Console.WriteLine("-");
+                            currentCommand.Append("-");
+                        }
                         continue;
+                    }
                     currentCommand.Replace(lastElementInSplit, autocomplete);
                     List<string> newCommandSplit = new List<string>(currentCommand.ToString().Split(' '));
                     Console.Write(newCommandSplit.ElementAt(newCommandSplit.Count - 1).Substring(lastElementInSplit.Length));
                 }
-                catch (Exception e)
+                catch
                 {
                     // ignore
                 }

@@ -39,11 +39,18 @@ public class InputManager
 
                 try
                 {
-                    List<string> split = new List<string>(currentCommand.ToString().Split(' '));
-                    // if next argument hasn't started we have to append a new object to the end of the list
+                    // simply append autocomplete suggestion when command ends in a space character
                     if (currentCommand.ToString()[currentCommand.ToString().Length - 1] == ' ')
-                        split.Add(" ");
+                    {
+                        Console.Write(autocomplete);
+                        currentCommand.Append(autocomplete);
+                        continue;
+                    }
+
+                    List<string> split = new List<string>(currentCommand.ToString().Split(' '));
                     string lastElementInSplit = split.ElementAt(split.Count - 1);
+                    if (lastElementInSplit[0] == '-')
+                        continue;
                     currentCommand.Replace(lastElementInSplit, autocomplete);
                     List<string> newCommandSplit = new List<string>(currentCommand.ToString().Split(' '));
                     Console.Write(newCommandSplit.ElementAt(newCommandSplit.Count - 1).Substring(lastElementInSplit.Length));

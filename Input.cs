@@ -28,12 +28,6 @@ public class InputManager
             if (keyInfo.Key == ConsoleKey.Tab)
             {
 
-                if (!ac.moreThanOneElement())
-                {
-                    Console.Write(currentCommand.ToString());
-                    continue;
-                }
-
                 try
                 {
                     List<string> split = new List<string>(currentCommand.ToString().Split(' '));

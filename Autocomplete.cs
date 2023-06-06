@@ -26,22 +26,38 @@ public class Autocomplete
     {
         string pwd = Directory.GetCurrentDirectory();
         files = Directory.EnumerateFiles(pwd).ToList<string>();
+        List<String> directories = Directory.EnumerateDirectories(pwd).ToList<string>();
+        List<String> results = files;
+        results.AddRange(directories);
         List<String> matchingResults = new List<String>();
-
-        if (files.Count > elementsToRequest)
+        foreach (string result in results)
         {
-            Console.Write($"\n{files.Count} elements found. Show them all (y/n): ");
-            ConsoleKeyInfo answer = Console.ReadKey();
+            if (relativePath(result, pwd).StartsWith(commandStart))
+                matchingResults.Add(result);
+        }
+        if (matchingResults.Count == 1)
+            return relativePath(matchingResults.ElementAt(0), pwd);
+        else if (matchingResults.Count == 0)
+            return "";
+        else
+        {
+            if (matchingResults.Count > elementsToRequest)
+            {
+                Console.Write($"\n{matchingResults.Count} elements found. Show them all (y/n): ");
+                ConsoleKeyInfo answer = Console.ReadKey();
+                Console.WriteLine();
+                if (answer.Key != ConsoleKey.Y)
+                    return "";
+            }
+            foreach (string element in matchingResults)
+            {
+                Console.Write($"{relativePath(element, pwd)}   ");
+            }
             Console.WriteLine();
-            if (answer.Key != ConsoleKey.Y)
-                return "";
+            return "";
         }
-        foreach (string element in files)
-        {
-            Console.Write($"{relativePath(element, pwd)}   ");
-        }
-        Console.WriteLine();
-        return "";
+
+
     }
 
     private string relativePath(string fullPath, string pwd)

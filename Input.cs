@@ -7,6 +7,7 @@ public class InputManager
 {
     private StringBuilder currentCommand = new StringBuilder();
     private Autocomplete ac = new Autocomplete();
+    private uint charactersInput;
 
     public InputManager()
     {
@@ -16,6 +17,7 @@ public class InputManager
     public string readInput()
     {
         currentCommand.Clear();
+        charactersInput = 0;
         ConsoleKeyInfo keyInfo;
         while (true)
         {
@@ -31,12 +33,16 @@ public class InputManager
             }
             else if (keyInfo.Key == ConsoleKey.Backspace)
             {
+                if (charactersInput == 0)
+                    continue;
+
                 Console.Write("\b \b");
-                if (currentCommand.Length > 0)
-                    currentCommand.Length--;
+                charactersInput--;
+                currentCommand.Length--;
             }
             else
             {
+                charactersInput++;
                 currentCommand.Append(keyInfo.KeyChar);
                 Console.Write(keyInfo.KeyChar);
             }
@@ -74,6 +80,4 @@ public class InputManager
         }
         catch { } // ignore 
     }
-
-
 }

@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 *.txt
+*.sh
 
 # User-specific files
 *.rsuser

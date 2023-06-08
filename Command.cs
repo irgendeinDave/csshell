@@ -16,9 +16,12 @@ struct Command
 
 public class CommandRunner
 {
-    public List<String> builtInCommands = new List<String> { "cd", "exit" };
+    public List<String> builtInCommands = new List<String> { "cd", "exit", "set" };
     public void run(string fullCommand)
     {
+        if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
+            return;
+
         run(split(fullCommand));
     }
 
@@ -82,5 +85,15 @@ public class CommandRunner
             {
                 Console.WriteLine(e.Message);
             }
+        else if (command.CommandName == "set")
+        {
+            string[] args = command.Arguments.Split('=');
+            if (args.Length != 2)
+            {
+                Console.WriteLine("Variable could not be set: no value given");
+                return;
+            }
+            Environment.SetEnvironmentVariable(args[0], args[1]);
+        }
     }
 }

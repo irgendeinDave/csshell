@@ -9,8 +9,7 @@ public static class Script
         string[] lines = File.ReadAllLines(path);
         foreach (string line in lines)
         {
-            if (!line.StartsWith("#!"))
-                cr.run(line);
+            cr.run(line);
         }
         Environment.Exit(0);
     }

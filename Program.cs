@@ -8,7 +8,7 @@ public class Program
 
     public static void Main(String[] args)
     {
-        Console.WriteLine("Welcome to CsShell!" + args.Length);
+        Console.WriteLine("Welcome to CsShell!");
         if (args.Length == 1)
         {
             Console.WriteLine("DEBUG: " + args[0]);

@@ -9,7 +9,7 @@
                 "build",
                 "${workspaceFolder}/shell.csproj",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary"               
             ],
             "problemMatcher": "$msCompile"
         },
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/shell.csproj"
+                "${workspaceFolder}/shell.csproj"  
             ],
             "problemMatcher": "$msCompile"
         }

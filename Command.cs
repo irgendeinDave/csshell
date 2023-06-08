@@ -1,4 +1,5 @@
 using System.Diagnostics;
+
 namespace cmd;
 
 struct Command

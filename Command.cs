@@ -27,6 +27,7 @@ public class CommandRunner
 
     private void run(Command command)
     {
+        replaceArguments(command, out command);
         if (isBuildIn(command))
         {
             executeBuiltInCommand(command);
@@ -95,5 +96,22 @@ public class CommandRunner
             }
             Environment.SetEnvironmentVariable(args[0], args[1]);
         }
+    }
+
+    // replace any variable with its value
+    private void replaceArguments(Command command, out Command cmd)
+    {
+        string args = String.Empty;
+        string[] split = command.Arguments.Split(' ');
+        foreach (string arg in split)
+        {
+            if (arg[0] == '$')
+            {
+                args += Environment.GetEnvironmentVariable(arg.Substring(1));
+            }
+            else args += arg;
+        }
+        cmd = command;
+        cmd.Arguments = args;
     }
 }

@@ -5,8 +5,8 @@ namespace InputReader;
 
 public class InputManager
 {
-    private StringBuilder currentCommand = new StringBuilder();
-    private Autocomplete ac = new Autocomplete();
+    private readonly StringBuilder currentCommand = new();
+    private readonly Autocomplete ac = new();
     private uint charactersInput;
 
     public InputManager()
@@ -53,7 +53,7 @@ public class InputManager
     {
         try
         {
-            List<string> split = new List<string>(currentCommand.ToString().Split(' '));
+            List<string> split = new(currentCommand.ToString().Split(' '));
             string lastElementInSplit = split.ElementAt(split.Count - 1);
 
             string autocomplete = ac.autocompleteResult(lastElementInSplit, currentCommand.ToString());
@@ -75,7 +75,7 @@ public class InputManager
                 return;
             }
             currentCommand.Replace(lastElementInSplit, autocomplete);
-            List<string> newCommandSplit = new List<string>(currentCommand.ToString().Split(' '));
+            List<string> newCommandSplit = new(currentCommand.ToString().Split(' '));
             Console.Write(newCommandSplit.ElementAt(newCommandSplit.Count - 1).Substring(lastElementInSplit.Length));
         }
         catch { } // ignore 

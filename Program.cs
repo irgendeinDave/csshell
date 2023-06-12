@@ -4,7 +4,7 @@ using InputReader;
 public class Program
 {
     private static string prompt = "$ ";
-    private static CommandRunner cr = new CommandRunner();
+    private static readonly CommandRunner cr = new();
 
     public static void Main(String[] args)
     {
@@ -16,7 +16,7 @@ public class Program
             Script.runScript(path, cr);
         }
 
-        InputManager inputReader = new InputManager();
+        InputManager inputReader = new();
 
         while (true)
         {

@@ -109,9 +109,9 @@ public class CommandRunner
                 break;            
             if (arg[0] == '$')
             {
-                args += Environment.GetEnvironmentVariable(arg.Substring(1));
+                args += Environment.GetEnvironmentVariable(arg.Substring(1)) + " ";
             }
-            else args += arg;
+            else args += arg+ " ";
         }
         cmd = command;
         cmd.Arguments = args;

@@ -118,13 +118,13 @@ public class CommandRunner
             else if (arg[0] == '$')
             {
                 string value = Environment.GetEnvironmentVariable(arg.Substring(1));
-                value.Replace(" ", null);
+                value = value.Replace(" ", null);
                 args += value;
             }
             else if (arg.StartsWith("~"))
             {
                 args += arg;
-                args.Replace("~", Environment.GetEnvironmentVariable("HOME"));
+                args = args.Replace("~", Environment.GetEnvironmentVariable("HOME"));
             }       
             else 
             {

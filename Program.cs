@@ -1,5 +1,6 @@
 ﻿using cmd;
 using InputReader;
+using EnvironmentSetup;
 
 public class Program
 {
@@ -8,6 +9,7 @@ public class Program
 
     public static void Main(String[] args)
     {
+        Setup.startSetup();
         Console.WriteLine("Welcome to CsShell!");
         if (args.Length == 1)
         {

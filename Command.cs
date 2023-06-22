@@ -27,7 +27,7 @@ public class CommandRunner
 
     private void run(Command command)
     {
-        replaceArguments(command, out command);
+        command.Arguments = processArguments(command);
         if (isBuildIn(command))
         {
             executeBuiltInCommand(command);
@@ -70,6 +70,7 @@ public class CommandRunner
         return false;
     }
 
+    // run a built in command
     private void executeBuiltInCommand(Command command)
     {
         if (command.CommandName == "exit")
@@ -94,26 +95,43 @@ public class CommandRunner
                 Console.WriteLine("Variable could not be set: no value given");
                 return;
             }
-            Environment.SetEnvironmentVariable(args[0], $"\"{args[1]}\"");
+            Environment.SetEnvironmentVariable(args[0], args[1]);
         }
     }
 
-    // replace any variable with its value
-    private void replaceArguments(Command command, out Command cmd)
+    /// <summary>
+    /// replace variables with their values and path modifiers like ~ with the full paths
+    /// </summary>
+    /// <param name="command"> The original command </param>
+    /// <returns> the new arguments for the command </returns>
+    private string processArguments(Command command)
     {
         string args = String.Empty;
         string[] split = command.Arguments.Split(' ');
+
+        // variables
         foreach (string arg in split)
         {
             if (arg == "")
-                break;            
-            if (arg[0] == '$')
+                break; 
+                
+            else if (arg[0] == '$')
             {
-                args += Environment.GetEnvironmentVariable(arg.Substring(1));
+                string value = Environment.GetEnvironmentVariable(arg.Substring(1));
+                value.Replace(" ", null);
+                args += value;
             }
-            else args += arg;
+            else if (arg.StartsWith("~"))
+            {
+                args += arg;
+                args.Replace("~", Environment.GetEnvironmentVariable("HOME"));
+            }       
+            else 
+            {
+                args += arg;
+                args += " ";
+            }
         }
-        cmd = command;
-        cmd.Arguments = args;
+        return args;
     }
 }

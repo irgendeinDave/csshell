@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using CommandHistory;
 
 namespace cmd;
 
@@ -21,6 +22,8 @@ public class CommandRunner
     {
         if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
             return;
+        
+        History.Append(fullCommand);
 
         run(split(fullCommand));
     }
@@ -125,11 +128,11 @@ public class CommandRunner
             {
                 args += arg;
                 args = args.Replace("~", Environment.GetEnvironmentVariable("HOME"));
-            }       
+            } 
+            // TODO: replace !! with last command in history      
             else 
             {
-                args += arg;
-                args += " ";
+                args += $"{arg} ";      
             }
         }
         return args;

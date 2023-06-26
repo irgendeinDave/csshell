@@ -20,6 +20,7 @@ public class CommandRunner
     public List<String> builtInCommands = new () { "cd", "exit", "set" };
     public void run(string fullCommand)
     {
+        // ignore commands
         if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
             return;
         

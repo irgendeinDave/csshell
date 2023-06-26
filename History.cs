@@ -6,19 +6,26 @@ public static class History
 
     public static void Append(string command)
     {
+        if (!File.Exists(historyFilePath))
+            using (File.Create(historyFilePath)) { }
+            
         if (string.IsNullOrEmpty(command))
             return;
 
-        if (LastStoredCommand() == command)
+        if (StoredCommand(0) == command)
             return;
 
        File.AppendAllText(historyFilePath, $"{command}\n");
     }
 
-    public static string LastStoredCommand()
+    public static string StoredCommand(int index)
     {
         if (new FileInfo(historyFilePath).Length == 0)
             return string.Empty;
-        return File.ReadLines(historyFilePath).Last();
+        
+        List<string> commands = File.ReadLines(historyFilePath).ToList();
+        if (index >= commands.Count)
+            return commands.First().Trim();
+        return commands.ElementAt(commands.Count - (index + 1)).Trim();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using cmd;
 using InputReader;
 using EnvironmentSetup;
+using CommandHistory;
 
 public class Program
 {
@@ -11,6 +12,8 @@ public class Program
     {
         Setup.startSetup();
         Console.WriteLine("Welcome to CsShell!");
+                Console.WriteLine("Debug: " + History.StoredCommand(0));
+
         if (args.Length == 1)
         {
             Console.WriteLine("DEBUG: " + args[0]);

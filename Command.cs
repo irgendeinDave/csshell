@@ -20,18 +20,32 @@ public class CommandRunner
     public List<String> builtInCommands = new () { "cd", "exit", "set" };
     public void run(string fullCommand)
     {
+        // apply !! operator
+        int doubleDashPosition = fullCommand.IndexOf("!!");
+        if (doubleDashPosition > -1)
+        {
+            if (doubleDashPosition <= fullCommand.Length - 2)
+            {
+                int index;
+                if (int.TryParse(new ReadOnlySpan<char>(fullCommand[doubleDashPosition + 2]), out index))
+                {
+                    fullCommand = fullCommand.Replace($"!!{index}", History.StoredCommand(index));
+                }
+            }
+        }
+
         // ignore commands
         if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
             return;
-        
-        History.Append(fullCommand);
 
         run(split(fullCommand));
+        History.Append(fullCommand);
     }
 
     private void run(Command command)
     {
         command.Arguments = processArguments(command);
+
         if (isBuildIn(command))
         {
             executeBuiltInCommand(command);
@@ -130,6 +144,20 @@ public class CommandRunner
                 args += arg;
                 args = args.Replace("~", Environment.GetEnvironmentVariable("HOME"));
             } 
+            else if (arg.StartsWith("!!"))
+            {
+                args += arg;
+                if (arg.Length == 2)
+                    args = args.Replace("!!", History.StoredCommand(0));
+                else 
+                {
+                    int index;
+                    if (int.TryParse(arg.Substring(2), out index))
+                    {
+                        args = args.Replace("!!" + index, History.StoredCommand(index));
+                    }
+                }
+            }
             // TODO: replace !! with last command in history      
             else 
             {
@@ -138,4 +166,30 @@ public class CommandRunner
         }
         return args;
     }
+/* 
+    private static Command applyLastCommandToCommandName(Command command)
+    {
+        Command cmd = command;
+        string loadedCommand = string.Empty;
+        if (cmd.CommandName.StartsWith("!!"))
+        {
+            if (cmd.CommandName.Length == 2)
+                loadedCommand = History.StoredCommand(0);
+            else   
+                if (int.TryParse(cmd.CommandName.Substring(2), out int index))                
+                    loadedCommand = History.StoredCommand(index);          
+        }
+        if (!loadedCommand.Contains(' ', StringComparison.CurrentCulture))
+        {
+            cmd.CommandName = loadedCommand;
+            cmd.Arguments = string.Empty;
+        }
+        else {
+            cmd.CommandName = loadedCommand[..(loadedCommand.IndexOf(' ') - 1)];
+            cmd.Arguments = loadedCommand[loadedCommand.IndexOf(' ')..];
+
+        }
+        return cmd;
+    }*/
 }
+ 

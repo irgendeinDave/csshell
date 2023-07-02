@@ -5,7 +5,7 @@ using CommandHistory;
 
 public class Program
 {
-    private static string prompt = "$ ";
+    private static readonly string prompt = "$ ";
     private static readonly CommandRunner cr = new();
 
     public static void Main(String[] args)

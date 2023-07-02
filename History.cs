@@ -9,7 +9,7 @@ public static class History
         if (!File.Exists(historyFilePath))
             using (File.Create(historyFilePath)) { }
             
-        if (string.IsNullOrEmpty(command))
+        if (string.IsNullOrEmpty(command) || command.IndexOf("!!") > -1)
             return;
 
         if (StoredCommand(0) == command)

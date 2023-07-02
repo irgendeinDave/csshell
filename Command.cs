@@ -53,14 +53,22 @@ public class CommandRunner
         }
         try
         {
-            ProcessStartInfo psi = new ProcessStartInfo(command.CommandName);
-            psi.Arguments = command.Arguments;
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = command.CommandName,
+                Arguments = command.Arguments,
+                UseShellExecute = false
+            };
+            
             Process runningCommand = Process.Start(psi);
             runningCommand.WaitForExit();
+            int exitCode = runningCommand.ExitCode;
+            Environment.SetEnvironmentVariable("?", exitCode.ToString());
         }
         catch (Exception e)
         {
             Console.WriteLine($"{command.CommandName} could not be executed: {e.Message}");
+            Environment.SetEnvironmentVariable("?", "2");
         }
     }
 
@@ -104,6 +112,7 @@ public class CommandRunner
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                Environment.SetEnvironmentVariable("?", "2");
             }
         else if (command.CommandName == "set")
         {
@@ -111,6 +120,7 @@ public class CommandRunner
             if (args.Length != 2)
             {
                 Console.WriteLine("Variable could not be set: no value given");
+                Environment.SetEnvironmentVariable("?", "2");
                 return;
             }
             Environment.SetEnvironmentVariable(args[0], args[1]);

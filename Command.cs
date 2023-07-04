@@ -21,17 +21,19 @@ public class CommandRunner
     public void run(string fullCommand)
     {
         // apply !! operator
-        int doubleDashPosition = fullCommand.IndexOf("!!");
-        if (doubleDashPosition > -1)
+        int doubleExclamationMarkPos = fullCommand.IndexOf("!!");
+        if (doubleExclamationMarkPos > -1)
         {
-            if (doubleDashPosition <= fullCommand.Length - 2)
+            if (doubleExclamationMarkPos < fullCommand.Length - 2)
             {
                 int index;
-                if (int.TryParse(new ReadOnlySpan<char>(fullCommand[doubleDashPosition + 2]), out index))
+                if (int.TryParse(new ReadOnlySpan<char>(fullCommand[doubleExclamationMarkPos + 2]), out index))
                 {
                     fullCommand = fullCommand.Replace($"!!{index}", History.StoredCommand(index));
                 }
             }
+            else
+                fullCommand = fullCommand.Replace($"!!", History.StoredCommand(0));
         }
 
         // ignore commands

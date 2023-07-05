@@ -31,7 +31,7 @@ public class Program
             if (String.IsNullOrEmpty(input))
                 continue;
 
-            cr.run(input);
+            cr.runLine(input);
         }
     }
 }

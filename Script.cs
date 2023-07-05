@@ -9,7 +9,7 @@ public static class Script
         string[] lines = File.ReadAllLines(path);
         foreach (string line in lines)
         {
-            cr.run(line);
+            cr.runLine(line);
         }
         Environment.Exit(0);
     }

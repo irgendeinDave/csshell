@@ -17,8 +17,19 @@ struct Command
 
 public class CommandRunner
 {
+
+    public void runLine(string fullCommand)
+    {
+        List<string> lines = fullCommand.Split(';').ToList();
+        foreach (string line in lines)
+        {
+            run(line.Trim());
+            Console.WriteLine();
+        }
+    }
+
     public List<String> builtInCommands = new () { "cd", "exit", "set" };
-    public void run(string fullCommand)
+    private void run(string fullCommand)
     {
         // apply !! operator
         int doubleExclamationMarkPos = fullCommand.IndexOf("!!");
@@ -31,7 +42,7 @@ public class CommandRunner
                 {
                     fullCommand = fullCommand.Replace($"!!{index}", History.StoredCommand(index));
                 }
-            }
+            } // No index given and !! at the end of the command
             else
                 fullCommand = fullCommand.Replace($"!!", History.StoredCommand(0));
         }

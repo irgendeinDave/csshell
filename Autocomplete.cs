@@ -25,7 +25,7 @@ public class Autocomplete
     public string autocompleteResult(string commandStart, string currentCommand)
     {
         string pwd = Directory.GetCurrentDirectory();
-        files = Directory.EnumerateFiles(pwd).ToList<string>();
+        files = Directory.EnumerateFiles(pwd).ToList();
         List<String> directories = Directory.EnumerateDirectories(pwd).ToList<string>();
         List<String> results = files;
         results.AddRange(directories);

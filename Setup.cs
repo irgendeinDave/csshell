@@ -15,7 +15,6 @@ public  static class Setup
     {
         if (!File.Exists(homePath + "/.csshellhist"))
             File.Create(homePath + "/.csshellhist");
-            else Console.WriteLine("Not Created");
     }
 
     private static void setupRcFile(string homePath)

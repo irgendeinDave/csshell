@@ -20,7 +20,7 @@ public class CommandRunner
 
     public void runLine(string fullCommand)
     {
-        List<string> lines = fullCommand.Split(';').ToList();
+        List<string> lines = fullCommand.Trim(';').Split(';').ToList();
         foreach (string line in lines)
         {
             run(line.Trim());
@@ -28,7 +28,7 @@ public class CommandRunner
         }
     }
 
-    public List<String> builtInCommands = new () { "cd", "exit", "set" };
+    public List<string> builtInCommands = new () { "cd", "exit", "set" };
     private void run(string fullCommand)
     {
         // apply !! operator
@@ -47,7 +47,7 @@ public class CommandRunner
                 fullCommand = fullCommand.Replace($"!!", History.StoredCommand(0));
         }
 
-        // ignore commands
+        // ignore comments
         if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
             return;
 

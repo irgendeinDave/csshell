@@ -12,11 +12,9 @@ public class Program
     {
         Setup.startSetup();
         Console.WriteLine("Welcome to CsShell!");
-                Console.WriteLine("Debug: " + History.StoredCommand(0));
 
         if (args.Length == 1)
         {
-            Console.WriteLine("DEBUG: " + args[0]);
             string path = args[0];
             Script.runScript(path, cr);
         }

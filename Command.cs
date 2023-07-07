@@ -189,30 +189,5 @@ public class CommandRunner
         }
         return args;
     }
-/* 
-    private static Command applyLastCommandToCommandName(Command command)
-    {
-        Command cmd = command;
-        string loadedCommand = string.Empty;
-        if (cmd.CommandName.StartsWith("!!"))
-        {
-            if (cmd.CommandName.Length == 2)
-                loadedCommand = History.StoredCommand(0);
-            else   
-                if (int.TryParse(cmd.CommandName.Substring(2), out int index))                
-                    loadedCommand = History.StoredCommand(index);          
-        }
-        if (!loadedCommand.Contains(' ', StringComparison.CurrentCulture))
-        {
-            cmd.CommandName = loadedCommand;
-            cmd.Arguments = string.Empty;
-        }
-        else {
-            cmd.CommandName = loadedCommand[..(loadedCommand.IndexOf(' ') - 1)];
-            cmd.Arguments = loadedCommand[loadedCommand.IndexOf(' ')..];
-
-        }
-        return cmd;
-    }*/
 }
  

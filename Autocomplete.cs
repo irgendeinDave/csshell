@@ -9,11 +9,11 @@ public class Autocomplete
         get { return elementsToRequest; }
     }
 
-    private List<String> files = new List<string>();
+    private List<string> files = new ();
 
-    public bool moreThanOneElement()
+    public bool MoreThanOneElement()
     {
-        files = Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList<string>();
+        files = Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList();
         return files.Count > 1;
     }
 
@@ -22,21 +22,21 @@ public class Autocomplete
     /// if there are multiple offer to print out all available ones and return an empty string
     /// else return the file name
     ///</summary>
-    public string autocompleteResult(string commandStart, string currentCommand)
+    public string AutocompleteResult(string commandStart, string currentCommand)
     {
         string pwd = Directory.GetCurrentDirectory();
         files = Directory.EnumerateFiles(pwd).ToList();
-        List<String> directories = Directory.EnumerateDirectories(pwd).ToList<string>();
-        List<String> results = files;
+        List<string> directories = Directory.EnumerateDirectories(pwd).ToList();
+        List<string> results = files;
         results.AddRange(directories);
-        List<String> matchingResults = new List<String>();
+        List<string> matchingResults = new ();
         foreach (string result in results)
         {
-            if (relativePath(result, pwd).StartsWith(commandStart))
+            if (RelativePath(result, pwd).StartsWith(commandStart))
                 matchingResults.Add(result);
         }
         if (matchingResults.Count == 1)
-            return relativePath(matchingResults.ElementAt(0), pwd);
+            return RelativePath(matchingResults.ElementAt(0), pwd);
         else if (matchingResults.Count == 0)
             return "";
         else
@@ -44,6 +44,7 @@ public class Autocomplete
             Console.WriteLine();
             if (matchingResults.Count > elementsToRequest)
             {
+                // TODO: print actual promtp instaead of "$ "
                 Console.Write($"\n{matchingResults.Count} elements found. Show them all (y/n): ");
                 ConsoleKeyInfo answer = Console.ReadKey();
                 Console.WriteLine();
@@ -55,15 +56,12 @@ public class Autocomplete
             }
             foreach (string element in matchingResults)
             {
-                Console.Write($"{relativePath(element, pwd)}   ");
+                Console.Write($"{RelativePath(element, pwd)}\t");
             }
             Console.Write("\n$ " + currentCommand.ToString());
             return "";
         }
     }
 
-    private string relativePath(string fullPath, string pwd)
-    {
-        return fullPath.Substring(pwd.Length + 1);
-    }
+    private static string RelativePath(string fullPath, string pwd) => fullPath[(pwd.Length + 1)..];
 }

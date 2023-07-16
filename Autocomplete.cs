@@ -82,9 +82,23 @@ public class Autocomplete
     }
 
     // TODO: use relative paths for files and directories
-    private static List<string> FilesInDirectory() => Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList();
+    private static List<string> FilesInDirectory() {
+        List<string> files = Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList();
+        for (int i = 0; i < files.Count; i++)
+        {
+            files[i] = RelativePath(files[i], Directory.GetCurrentDirectory());
+        }
+        return files;
+    } 
 
-    private static List<string> Subdirectories() => Directory.EnumerateDirectories(Directory.GetCurrentDirectory()).ToList();
+    private static List<string> Subdirectories() {
+        List <string> dirs = Directory.EnumerateDirectories(Directory.GetCurrentDirectory()).ToList();
+        for (int i = 0; i < dirs.Count; i++)
+        {
+            dirs[i] = RelativePath(dirs[i], Directory.GetCurrentDirectory()) + "/";
+        }
+        return dirs;
+    } 
 
     #endregion
 

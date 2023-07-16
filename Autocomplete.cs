@@ -9,7 +9,7 @@ public class Autocomplete
         get { return elementsToRequest; }
     }
 
-    private List<string> files = new ();
+    private List<string> files = new();
 
     public bool MoreThanOneElement()
     {
@@ -22,21 +22,17 @@ public class Autocomplete
     /// if there are multiple offer to print out all available ones and return an empty string
     /// else return the file name
     ///</summary>
-    public string AutocompleteResult(string commandStart, string currentCommand)
+    public string AutocompleteResult(string commandEnding, string fullCommand)
     {
-        string pwd = Directory.GetCurrentDirectory();
-        files = Directory.EnumerateFiles(pwd).ToList();
-        List<string> directories = Directory.EnumerateDirectories(pwd).ToList();
-        List<string> results = files;
-        results.AddRange(directories);
-        List<string> matchingResults = new ();
+        List<string> results = AllSuggestions(fullCommand);
+        List<string> matchingResults = new();
         foreach (string result in results)
         {
-            if (RelativePath(result, pwd).StartsWith(commandStart))
+            if (result.StartsWith(commandEnding))
                 matchingResults.Add(result);
         }
         if (matchingResults.Count == 1)
-            return RelativePath(matchingResults.ElementAt(0), pwd);
+            return results.ElementAt(0);
         else if (matchingResults.Count == 0)
             return "";
         else
@@ -44,24 +40,53 @@ public class Autocomplete
             Console.WriteLine();
             if (matchingResults.Count > elementsToRequest)
             {
-                // TODO: print actual promtp instaead of "$ "
+                // TODO: print actual prompt instaead of "$ "
                 Console.Write($"\n{matchingResults.Count} elements found. Show them all (y/n): ");
                 ConsoleKeyInfo answer = Console.ReadKey();
                 Console.WriteLine();
                 if (answer.Key != ConsoleKey.Y)
                 {
-                    Console.Write("\n$ " + currentCommand.ToString());
+                    Console.Write("\n$ " + fullCommand.ToString());
                     return "";
                 }
             }
             foreach (string element in matchingResults)
             {
-                Console.Write($"{RelativePath(element, pwd)}\t");
+                Console.Write($"{element}\t");
             }
-            Console.Write("\n$ " + currentCommand.ToString());
+            Console.Write("\n$ " + fullCommand.ToString());
             return "";
         }
     }
+
+    #region Methods to get List from different sources
+    /// <summary>
+    /// Finds all the appropriate suggestions depending on the given command
+    /// does not check if the suggestions match the input
+    /// </summary>
+    /// <param name="command">The full command</param>
+    /// <returns> All suggestions for a specific command name</returns>
+    private List<string> AllSuggestions(string command)
+    {
+        List<string> results = new();
+        if (command.StartsWith("ls"))
+            results.AddRange(Subdirectories());
+        else if (command.StartsWith("cd"))
+            results.AddRange(Subdirectories());
+        return results;
+    }
+
+    private static List<string> GitCommands()
+    {
+        return new();
+    }
+
+    // TODO: use relative paths for files and directories
+    private static List<string> FilesInDirectory() => Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList();
+
+    private static List<string> Subdirectories() => Directory.EnumerateDirectories(Directory.GetCurrentDirectory()).ToList();
+
+    #endregion
 
     private static string RelativePath(string fullPath, string pwd) => fullPath[(pwd.Length + 1)..];
 }

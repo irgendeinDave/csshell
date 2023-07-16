@@ -56,7 +56,7 @@ public class InputManager
             List<string> split = new(currentCommand.ToString().Split(' '));
             string lastElementInSplit = split.ElementAt(split.Count - 1);
 
-            string autocomplete = ac.autocompleteResult(lastElementInSplit, currentCommand.ToString());
+            string autocomplete = ac.AutocompleteResult(lastElementInSplit, currentCommand.ToString());
             // simply append autocomplete suggestion when command ends in a space character
             if (currentCommand.ToString()[currentCommand.ToString().Length - 1] == ' ')
             {

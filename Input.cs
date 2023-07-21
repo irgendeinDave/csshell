@@ -5,9 +5,9 @@ namespace InputReader;
 
 public class InputManager
 {
+    private readonly string prompt = "$ ";
     private readonly StringBuilder currentCommand = new();
     private readonly Autocomplete ac = new();
-    private uint charactersInput;
 
     public InputManager()
     {
@@ -17,7 +17,6 @@ public class InputManager
     public string readInput()
     {
         currentCommand.Clear();
-        charactersInput = 0;
         ConsoleKeyInfo keyInfo;
         while (true)
         {
@@ -31,18 +30,13 @@ public class InputManager
             {
                 applyAutocomplete();
             }
-            else if (keyInfo.Key == ConsoleKey.Backspace)
+            else if (keyInfo.Key == ConsoleKey.Backspace && Console.GetCursorPosition().Left > prompt.Length)
             {
-                if (charactersInput == 0)
-                    continue;
-
                 Console.Write("\b \b");
-                charactersInput--;
                 currentCommand.Length--;
             }
             else
             {
-                charactersInput++;
                 currentCommand.Append(keyInfo.KeyChar);
                 Console.Write(keyInfo.KeyChar);
             }
@@ -69,7 +63,7 @@ public class InputManager
             {
                 if (lastElementInSplit.Length == 1)
                 {
-                    Console.WriteLine("-");
+                    Console.Write("-");
                     currentCommand.Append("-");
                 }
                 return;

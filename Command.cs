@@ -51,18 +51,19 @@ public class CommandRunner
         if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
             return;
 
-        run(split(fullCommand));
-        History.Append(fullCommand);
+        if (run(split(fullCommand)) == 0)
+            History.Append(fullCommand);
     }
 
-    private void run(Command command)
+    /// <returns> the exit code of the command </returns>
+    private int run(Command command)
     {
         command.Arguments = processArguments(command);
 
         if (isBuildIn(command))
         {
             executeBuiltInCommand(command);
-            return;
+            return 0; // assume the process was successful for now
         }
         try
         {
@@ -76,13 +77,16 @@ public class CommandRunner
             Process runningCommand = Process.Start(psi);
             runningCommand.WaitForExit();
             int exitCode = runningCommand.ExitCode;
+            
             Environment.SetEnvironmentVariable("?", exitCode.ToString());
+            return exitCode;
         }
         catch (Exception e)
         {
             Console.WriteLine($"{command.CommandName} could not be executed: {e.Message}");
             Environment.SetEnvironmentVariable("?", "2");
         }
+        return 1;
     }
 
     // split the command into program name and argument

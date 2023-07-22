@@ -17,6 +17,8 @@ struct Command
 
 public class CommandRunner
 {
+    private readonly Dictionary<string, string> aliases = new();
+
 
     public void runLine(string fullCommand)
     {
@@ -24,13 +26,19 @@ public class CommandRunner
         foreach (string line in lines)
         {
             run(line.Trim());
-            Console.WriteLine();
         }
     }
 
-    public List<string> builtInCommands = new () { "cd", "exit", "set" };
+    public List<string> builtInCommands = new () { "cd", "exit", "set", "alias" };
     private void run(string fullCommand)
     {
+        // ignore comments
+        if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
+            return;
+        
+        // do not run empty commands
+        if (fullCommand.Trim() == string.Empty)
+            return;
         // apply !! operator
         int doubleExclamationMarkPos = fullCommand.IndexOf("!!");
         if (doubleExclamationMarkPos > -1)
@@ -47,17 +55,13 @@ public class CommandRunner
                 fullCommand = fullCommand.Replace($"!!", History.StoredCommand(0));
         }
 
-        // ignore comments
-        if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
-            return;
-
         if (run(split(fullCommand)) == 0)
             History.Append(fullCommand);
     }
 
     /// <returns> the exit code of the command </returns>
     private int run(Command command)
-    {
+    {   
         command.Arguments = processArguments(command);
 
         if (isBuildIn(command))
@@ -141,6 +145,19 @@ public class CommandRunner
                 return;
             }
             Environment.SetEnvironmentVariable(args[0], args[1]);
+        }
+        else if (command.CommandName == "alias")
+        {
+            string[] split = command.Arguments.Split('=');
+            if (split.Length != 2)
+                return;
+            if (aliases.ContainsKey(split[0]))
+            {
+                aliases[split[0]] = split[1];
+                return;
+            }
+            aliases.Add(split[0].Trim(), split[1].Trim());
+            Console.WriteLine("Alias added");
         }
     }
 

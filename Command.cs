@@ -19,13 +19,12 @@ public class CommandRunner
 {
     private readonly Dictionary<string, string> aliases = new();
 
-
     public void runLine(string fullCommand)
     {
-        List<string> lines = fullCommand.Trim(';').Split(';').ToList();
-        foreach (string line in lines)
+        List<string> commands = fullCommand.Trim(';').Split(';').ToList();
+        foreach (string command in commands)
         {
-            run(line.Trim());
+            run(command.Trim());
         }
     }
 
@@ -35,10 +34,18 @@ public class CommandRunner
         // ignore comments
         if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
             return;
+
+        // replace alias keywords with the actual commands
+        foreach (KeyValuePair<string, string> kvp in aliases)
+        {
+            if (fullCommand.StartsWith(kvp.Key))
+                fullCommand = fullCommand.Replace(kvp.Key, kvp.Value);
+        }
         
         // do not run empty commands
         if (fullCommand.Trim() == string.Empty)
             return;
+
         // apply !! operator
         int doubleExclamationMarkPos = fullCommand.IndexOf("!!");
         if (doubleExclamationMarkPos > -1)

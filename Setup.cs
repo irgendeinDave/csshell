@@ -1,15 +1,17 @@
+
+
 namespace EnvironmentSetup;
 
-public static class Setup
+public  static class Setup
 {
     public static void startSetup()
     {
-        var userHomeDirectory = Environment.GetEnvironmentVariable("HOME");
+        string userHomeDirectory = Environment.GetEnvironmentVariable("HOME");
         setupHistoryFile(userHomeDirectory);
         setupRcFile(userHomeDirectory);
     }
 
-    private static void setupHistoryFile(string homePath)
+    private static  void setupHistoryFile(string homePath)
     {
         if (!File.Exists(homePath + "/.csshellhist"))
             File.Create(homePath + "/.csshellhist");
@@ -20,4 +22,5 @@ public static class Setup
         if (!File.Exists(homePath + "/.csshellrc"))
             File.Create(homePath + "/.csshellrc");
     }
+
 }

@@ -28,19 +28,15 @@ public class CommandRunner
         }
     }
 
-    public List<string> builtInCommands = new () { "cd", "exit", "set", "alias" };
+    private List<string> builtInCommands = new () { "cd", "exit", "set", "alias" };
     private void run(string fullCommand)
     {
         // ignore comments
         if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
             return;
-
+        
         // replace alias keywords with the actual commands
-        foreach (KeyValuePair<string, string> kvp in aliases)
-        {
-            if (fullCommand.StartsWith(kvp.Key))
-                fullCommand = fullCommand.Replace(kvp.Key, kvp.Value);
-        }
+        fullCommand = ApplyAliases(fullCommand);
         
         // do not run empty commands
         if (fullCommand.Trim() == string.Empty)
@@ -209,13 +205,26 @@ public class CommandRunner
                     }
                 }
             }
-            // TODO: replace !! with last command in history      
             else 
             {
                 args += $"{arg} ";      
             }
         }
         return args;
+    }
+
+    private string ApplyAliases(string fullCommand)
+    {
+        string result = fullCommand;
+        foreach (string arg in fullCommand.Split(' '))
+        {
+            foreach (KeyValuePair<string, string> kvp in aliases)
+            {
+                if (arg == kvp.Key)
+                    result = result.Replace(kvp.Key, kvp.Value);
+            }
+        }
+        return result;
     }
 }
  

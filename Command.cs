@@ -166,7 +166,6 @@ public class CommandRunner
             }
 
             aliases.Add(split[0].Trim(), split[1].Trim());
-            Console.WriteLine("Alias added");
         }
     }
 
@@ -186,11 +185,18 @@ public class CommandRunner
             if (arg == "")
                 break;
 
-            else if (arg[0] == '$')
+            if (arg[0] == '$')
             {
-                string value = Environment.GetEnvironmentVariable(arg.Substring(1));
-                value = value.Replace(" ", null);
-                args += value;
+                string? value = Environment.GetEnvironmentVariable(arg.Substring(1));
+                if (value == null)
+                {
+                    Console.WriteLine($"Value for {arg} not found!");
+                }
+                else
+                {
+                    value = value.Replace(" ", null);
+                    args += value; 
+                }
             }
             else if (arg.StartsWith("~"))
             {
@@ -215,7 +221,6 @@ public class CommandRunner
                 args += $"{arg} ";
             }
         }
-
         return args;
     }
 
@@ -235,7 +240,6 @@ public class CommandRunner
                     result = result.Replace(kvp.Key, kvp.Value);
             }
         }
-
         return result;
     }
 }

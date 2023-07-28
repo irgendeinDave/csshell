@@ -14,7 +14,7 @@ public class Program
         Console.WriteLine("Welcome to CsShell!");
 
         Script.runScript(Settings.rcFilePath, cr);
-        
+
         if (args.Length == 1)
         {
             string path = args[0];

@@ -11,6 +11,7 @@ public static class Script
         {
             cr.runLine(line);
         }
+
         if (path != Settings.rcFilePath)
             Environment.Exit(0);
     }

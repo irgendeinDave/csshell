@@ -3,6 +3,7 @@ namespace Autocompletion;
 public class Autocomplete
 {
     private int elementsToRequest;
+
     public int ElementsToRequest
     {
         set { elementsToRequest = value; }
@@ -31,6 +32,7 @@ public class Autocomplete
             if (result.StartsWith(commandEnding))
                 matchingResults.Add(result);
         }
+
         if (matchingResults.Count == 1)
             return results.ElementAt(0);
         else if (matchingResults.Count == 0)
@@ -50,16 +52,19 @@ public class Autocomplete
                     return "";
                 }
             }
+
             foreach (string element in matchingResults)
             {
                 Console.Write($"{element}\t");
             }
+
             Console.Write("\n$ " + fullCommand.ToString());
             return "";
         }
     }
 
     #region Methods to get List from different sources
+
     /// <summary>
     /// Finds all the appropriate suggestions depending on the given command
     /// does not check if the suggestions match the input
@@ -82,23 +87,27 @@ public class Autocomplete
     }
 
     // TODO: use relative paths for files and directories
-    private static List<string> FilesInDirectory() {
+    private static List<string> FilesInDirectory()
+    {
         List<string> files = Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList();
         for (int i = 0; i < files.Count; i++)
         {
             files[i] = RelativePath(files[i], Directory.GetCurrentDirectory());
         }
-        return files;
-    } 
 
-    private static List<string> Subdirectories() {
-        List <string> dirs = Directory.EnumerateDirectories(Directory.GetCurrentDirectory()).ToList();
+        return files;
+    }
+
+    private static List<string> Subdirectories()
+    {
+        List<string> dirs = Directory.EnumerateDirectories(Directory.GetCurrentDirectory()).ToList();
         for (int i = 0; i < dirs.Count; i++)
         {
             dirs[i] = RelativePath(dirs[i], Directory.GetCurrentDirectory()) + "/";
         }
+
         return dirs;
-    } 
+    }
 
     #endregion
 

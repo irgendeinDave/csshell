@@ -26,6 +26,7 @@ public class InputManager
                 Console.WriteLine();
                 return currentCommand.ToString();
             }
+
             if (keyInfo.Key == ConsoleKey.Tab)
             {
                 applyAutocomplete();
@@ -66,12 +67,16 @@ public class InputManager
                     Console.Write("-");
                     currentCommand.Append("-");
                 }
+
                 return;
             }
+
             currentCommand.Replace(lastElementInSplit, autocomplete);
             List<string> newCommandSplit = new(currentCommand.ToString().Split(' '));
             Console.Write(newCommandSplit.ElementAt(newCommandSplit.Count - 1).Substring(lastElementInSplit.Length));
         }
-        catch { } // ignore 
+        catch
+        {
+        } // ignore 
     }
 }

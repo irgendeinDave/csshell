@@ -12,7 +12,7 @@ public static class Script
             cr.runLine(line);
         }
 
-        if (path != Settings.rcFilePath)
+        if (path != Settings.RcFilePath)
             Environment.Exit(0);
     }
 }

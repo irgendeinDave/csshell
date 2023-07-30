@@ -42,13 +42,12 @@ public class Autocomplete
             Console.WriteLine();
             if (matchingResults.Count > elementsToRequest)
             {
-                // TODO: print actual prompt instaead of "$ "
                 Console.Write($"\n{matchingResults.Count} elements found. Show them all (y/n): ");
                 ConsoleKeyInfo answer = Console.ReadKey();
                 Console.WriteLine();
                 if (answer.Key != ConsoleKey.Y)
                 {
-                    Console.Write("\n$ " + fullCommand.ToString());
+                    Console.Write($"\n{Settings.Prompt()}" + fullCommand.ToString());
                     return "";
                 }
             }
@@ -58,7 +57,7 @@ public class Autocomplete
                 Console.Write($"{element}\t");
             }
 
-            Console.Write("\n$ " + fullCommand.ToString());
+            Console.Write($"\n{Settings.Prompt()}" + fullCommand.ToString());
             return "";
         }
     }

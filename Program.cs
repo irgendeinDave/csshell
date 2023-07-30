@@ -5,7 +5,6 @@ using CommandHistory;
 
 public class Program
 {
-    private static readonly string prompt = "$ ";
     private static readonly CommandRunner cr = new();
 
     public static void Main(String[] args)
@@ -13,7 +12,7 @@ public class Program
         Setup.startSetup();
         Console.WriteLine("Welcome to CsShell!");
 
-        Script.runScript(Settings.rcFilePath, cr);
+        Script.runScript(Settings.RcFilePath, cr);
 
         if (args.Length == 1)
         {
@@ -25,10 +24,11 @@ public class Program
 
         while (true)
         {
-            Console.Write(prompt);
+            string s = Environment.GetEnvironmentVariable("PROPMT");
+            Console.Write(Settings.Prompt());
 
-            string? input = inputReader.readInput();
-            if (String.IsNullOrEmpty(input))
+            string input = inputReader.readInput();
+            if (string.IsNullOrEmpty(input))
                 continue;
 
             cr.runLine(input);

@@ -5,7 +5,6 @@ namespace InputReader;
 
 public class InputManager
 {
-    private readonly string prompt = "$ ";
     private readonly StringBuilder currentCommand = new();
     private readonly Autocomplete ac = new();
 
@@ -31,7 +30,7 @@ public class InputManager
             {
                 applyAutocomplete();
             }
-            else if (keyInfo.Key == ConsoleKey.Backspace && Console.GetCursorPosition().Left > prompt.Length)
+            else if (keyInfo.Key == ConsoleKey.Backspace && Console.GetCursorPosition().Left > Settings.Prompt().Length)
             {
                 Console.Write("\b \b");
                 currentCommand.Length--;
@@ -77,6 +76,7 @@ public class InputManager
         }
         catch
         {
-        } // ignore 
+            // ignored
+        }
     }
 }

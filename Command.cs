@@ -49,8 +49,7 @@ public class CommandRunner
         {
             if (doubleExclamationMarkPos < fullCommand.Length - 2)
             {
-                int index;
-                if (int.TryParse(new ReadOnlySpan<char>(fullCommand[doubleExclamationMarkPos + 2]), out index))
+                if (int.TryParse(new ReadOnlySpan<char>(fullCommand[doubleExclamationMarkPos + 2]), out int index))
                 {
                     fullCommand = fullCommand.Replace($"!!{index}", History.StoredCommand(index));
                 }
@@ -99,7 +98,7 @@ public class CommandRunner
         return 1;
     }
 
-    // split the command into program name and argument
+    // split the command into program name and arguments
     private Command split(string fullCommand)
     {
         int spacePosition = fullCommand.IndexOf(' ');
@@ -120,7 +119,6 @@ public class CommandRunner
             if (cmd == command.CommandName)
                 return true;
         }
-
         return false;
     }
 
@@ -240,6 +238,7 @@ public class CommandRunner
                     result = result.Replace(kvp.Key, kvp.Value);
             }
         }
+
         return result;
     }
 }

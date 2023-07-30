@@ -131,7 +131,7 @@ public class CommandRunner
             try
             {
                 if (command.Arguments == "")
-                    Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("HOME"));
+                    Directory.SetCurrentDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
                 else
                     Directory.SetCurrentDirectory(command.Arguments);
             }
@@ -199,7 +199,7 @@ public class CommandRunner
             else if (arg.StartsWith("~"))
             {
                 args += arg;
-                args = args.Replace("~", Environment.GetEnvironmentVariable("HOME"));
+                args = args.Replace("~", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
             }
             else if (arg.StartsWith("!!"))
             {

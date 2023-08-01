@@ -182,18 +182,29 @@ public class CommandRunner
         {
             if (arg == "")
                 break;
-
-            if (arg[0] == '$')
+            
+            // two dollar signs can be used to give the range of a variable name
+            if (arg.Contains('$'))
             {
-                string? value = Environment.GetEnvironmentVariable(arg.Substring(1));
+                int dsPosition = arg.IndexOf('$'); // can't be -1 because of the if statement above
+                int secondDs = arg.Substring(dsPosition + 1).IndexOf('$') + dsPosition;
+                string? value;
+                if (secondDs == -1)
+                    value = Environment.GetEnvironmentVariable(arg.Substring(dsPosition + 1));
+                else
+                    value = Environment.GetEnvironmentVariable(arg.Substring(dsPosition + 1, secondDs - dsPosition));
+                string result = arg.Substring(0, dsPosition);
                 if (value == null)
                 {
-                    Console.WriteLine($"Value for {arg} not found!");
+                    Console.WriteLine($"Value not found!");
                 }
                 else
                 {
-                    value = value.Replace(" ", null);
-                    args += value; 
+                    result += value;
+                    if (secondDs > -1)
+                        result += arg.Substring(secondDs + 2);
+                    result = result.Replace(" ", null);
+                    args += result; 
                 }
             }
             else if (arg.StartsWith("~"))

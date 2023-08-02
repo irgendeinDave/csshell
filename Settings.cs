@@ -1,4 +1,3 @@
-using cmd;
 
 public static class Settings
 {

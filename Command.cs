@@ -1,9 +1,11 @@
 using System.Diagnostics;
+using Aliases;
 using CommandHistory;
+using BuiltInCommands;
 
-namespace cmd;
+namespace CommandExecution;
 
-struct Command
+public struct Command
 {
     public string CommandName;
     public string Arguments;
@@ -17,8 +19,8 @@ struct Command
 
 public class CommandRunner
 {
-    private readonly Dictionary<string, string> aliases = new();
-
+    private AliasManager am;
+    private BuiltIn bi;
     public void runLine(string fullCommand)
     {
         List<string> commands = fullCommand.Trim(';').Split(';').ToList();
@@ -37,7 +39,7 @@ public class CommandRunner
             return;
 
         // replace alias keywords with the actual commands
-        fullCommand = applyAliases(fullCommand);
+        fullCommand = am.applyAliases(fullCommand);
 
         // do not run empty commands
         if (fullCommand.Trim() == string.Empty)
@@ -69,7 +71,7 @@ public class CommandRunner
 
         if (isBuildIn(command))
         {
-            executeBuiltInCommand(command);
+            bi.executeBuiltInCommand(command);
             return 0; // assume the process was successful for now
         }
 
@@ -123,50 +125,7 @@ public class CommandRunner
     }
 
     // run a built in command
-    private void executeBuiltInCommand(Command command)
-    {
-        if (command.CommandName == "exit")
-            Environment.Exit(0);
-        else if (command.CommandName == "cd")
-            try
-            {
-                if (command.Arguments == "")
-                    Directory.SetCurrentDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-                else
-                    Directory.SetCurrentDirectory(command.Arguments.Trim());
-                Environment.SetEnvironmentVariable("RELPWD", Util.RelativePathToHome(Directory.GetCurrentDirectory()));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Environment.SetEnvironmentVariable("?", "2");
-            }
-        else if (command.CommandName == "set")
-        {
-            string[] args = command.Arguments.Split('=');
-            if (args.Length != 2)
-            {
-                Console.WriteLine("Variable could not be set: no value given");
-                Environment.SetEnvironmentVariable("?", "2");
-                return;
-            }
-
-            Environment.SetEnvironmentVariable(args[0], args[1]);
-        }
-        else if (command.CommandName == "alias")
-        {
-            string[] split = command.Arguments.Split('=');
-            if (split.Length != 2)
-                return;
-            if (aliases.ContainsKey(split[0]))
-            {
-                aliases[split[0]] = split[1];
-                return;
-            }
-
-            aliases.Add(split[0].Trim(), split[1].Trim());
-        }
-    }
+    
 
     /// <summary>
     /// replace variables with their values and path modifiers like ~ with the full paths
@@ -197,7 +156,7 @@ public class CommandRunner
                 string result = arg.Substring(0, dsPosition);
                 if (value == null)
                 {
-                    Console.WriteLine($"Value not found!");
+                    Console.WriteLine("Value not found!");
                 }
                 else
                 {
@@ -232,25 +191,5 @@ public class CommandRunner
             }
         }
         return args;
-    }
-
-    /// <summary>
-    /// aliases are applied for each word separated by a space
-    /// </summary>
-    /// <param name="fullCommand">the original command</param>
-    /// <returns>the new command with replaced aliases</returns>
-    private string applyAliases(string fullCommand)
-    {
-        string result = fullCommand;
-        foreach (string arg in fullCommand.Split(' '))
-        {
-            foreach (KeyValuePair<string, string> kvp in aliases)
-            {
-                if (arg == kvp.Key)
-                    result = result.Replace(kvp.Key, kvp.Value);
-            }
-        }
-
-        return result;
     }
 }

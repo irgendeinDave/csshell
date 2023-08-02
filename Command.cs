@@ -28,7 +28,7 @@ public class CommandRunner
         }
     }
 
-    private List<string> builtInCommands = new() { "cd", "exit", "set", "alias" };
+    private readonly List<string> builtInCommands = new() { "cd", "exit", "set", "alias" };
 
     private void run(string fullCommand)
     {
@@ -133,7 +133,8 @@ public class CommandRunner
                 if (command.Arguments == "")
                     Directory.SetCurrentDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
                 else
-                    Directory.SetCurrentDirectory(command.Arguments);
+                    Directory.SetCurrentDirectory(command.Arguments.Trim());
+                Environment.SetEnvironmentVariable("RELPWD", Util.RelativePathToHome(Directory.GetCurrentDirectory()));
             }
             catch (Exception e)
             {

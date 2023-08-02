@@ -91,7 +91,7 @@ public class Autocomplete
         List<string> files = Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList();
         for (int i = 0; i < files.Count; i++)
         {
-            files[i] = RelativePath(files[i], Directory.GetCurrentDirectory());
+            files[i] = Util.RelativePath(files[i], Directory.GetCurrentDirectory());
         }
 
         return files;
@@ -102,13 +102,11 @@ public class Autocomplete
         List<string> dirs = Directory.EnumerateDirectories(Directory.GetCurrentDirectory()).ToList();
         for (int i = 0; i < dirs.Count; i++)
         {
-            dirs[i] = RelativePath(dirs[i], Directory.GetCurrentDirectory()) + "/";
+            dirs[i] = Util.RelativePath(dirs[i], Directory.GetCurrentDirectory()) + "/";
         }
 
         return dirs;
     }
 
     #endregion
-
-    private static string RelativePath(string fullPath, string pwd) => fullPath[(pwd.Length + 1)..];
 }

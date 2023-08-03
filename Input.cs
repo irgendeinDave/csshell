@@ -5,7 +5,7 @@ namespace InputReader;
 
 public class InputManager
 {
-    private readonly StringBuilder currentCommand = new();
+    private StringBuilder currentCommand = new();
     private readonly Autocomplete ac = new();
 
     public InputManager()
@@ -69,8 +69,10 @@ public class InputManager
 
                 return;
             }
-
-            currentCommand.Replace(lastElementInSplit, autocomplete);
+            // BUG: Replace will replace all instances of the last element
+            int lastSpaceIndex = currentCommand.ToString().LastIndexOf(' ');
+            currentCommand = new (currentCommand.ToString()[..lastSpaceIndex] + currentCommand.ToString()
+                .Substring(lastSpaceIndex).Replace(lastElementInSplit, autocomplete));
             List<string> newCommandSplit = new(currentCommand.ToString().Split(' '));
             Console.Write(newCommandSplit.ElementAt(newCommandSplit.Count - 1).Substring(lastElementInSplit.Length));
         }

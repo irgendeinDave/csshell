@@ -19,8 +19,8 @@ public struct Command
 
 public class CommandRunner
 {
-    private AliasManager am;
-    private BuiltIn bi;
+    private static AliasManager am = new();
+    private BuiltIn bi = new(am);
     public void runLine(string fullCommand)
     {
         List<string> commands = fullCommand.Trim(';').Split(';').ToList();
@@ -124,9 +124,6 @@ public class CommandRunner
         return false;
     }
 
-    // run a built in command
-    
-
     /// <summary>
     /// replace variables with their values and path modifiers like ~ with the full paths
     /// </summary>
@@ -146,6 +143,7 @@ public class CommandRunner
             // two dollar signs can be used to give the range of a variable name
             if (arg.Contains('$'))
             {
+                 
                 int dsPosition = arg.IndexOf('$'); // can't be -1 because of the if statement above
                 int secondDs = arg.Substring(dsPosition + 1).IndexOf('$') + dsPosition;
                 string? value;

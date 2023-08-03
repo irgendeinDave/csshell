@@ -34,32 +34,31 @@ public class Autocomplete
         }
 
         if (matchingResults.Count == 1)
-            return results.ElementAt(0);
-        else if (matchingResults.Count == 0)
+            return matchingResults.ElementAt(0);
+        if (matchingResults.Count == 0)
             return "";
-        else
+       
+        Console.WriteLine();
+        if (matchingResults.Count > elementsToRequest)
         {
+            Console.Write($"\n{matchingResults.Count} elements found. Show them all (y/n): ");
+            ConsoleKeyInfo answer = Console.ReadKey();
             Console.WriteLine();
-            if (matchingResults.Count > elementsToRequest)
+            if (answer.Key != ConsoleKey.Y)
             {
-                Console.Write($"\n{matchingResults.Count} elements found. Show them all (y/n): ");
-                ConsoleKeyInfo answer = Console.ReadKey();
-                Console.WriteLine();
-                if (answer.Key != ConsoleKey.Y)
-                {
-                    Console.Write($"\n{Settings.Prompt()}" + fullCommand.ToString());
-                    return "";
-                }
+                Console.Write($"\n{Settings.Prompt()}" + fullCommand.ToString());
+                return "";
             }
-
-            foreach (string element in matchingResults)
-            {
-                Console.Write($"{element}\t");
-            }
-
-            Console.Write($"\n{Settings.Prompt()}" + fullCommand.ToString());
-            return "";
         }
+
+        foreach (string element in matchingResults)
+        {
+            Console.Write($"{element}\t");
+        }
+
+        Console.Write($"\n{Settings.Prompt()}" + fullCommand.ToString());
+        return "";
+        
     }
 
     #region Methods to get List from different sources

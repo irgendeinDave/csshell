@@ -42,7 +42,7 @@ public class BuiltIn
         }
         else if (command.CommandName == "alias")
         {
-            string[] split = command.Arguments.Split('=');
+            string[] split = command.Arguments.Split('=', 2);
             if (split.Length != 2)
                 return;
             if (am.aliases.ContainsKey(split[0]))

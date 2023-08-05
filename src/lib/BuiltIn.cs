@@ -30,7 +30,7 @@ public class BuiltIn
             }
         else if (command.CommandName == "set")
         {
-            string[] args = command.Arguments.Split('=');
+            string[] args = command.Arguments.Split('=', 2);
             if (args.Length != 2)
             {
                 Console.WriteLine("Variable could not be set: no value given");

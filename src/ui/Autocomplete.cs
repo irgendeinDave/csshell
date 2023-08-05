@@ -63,6 +63,8 @@ public class Autocomplete
 
     #region Methods to get List from different sources
 
+    private readonly List<string> subdirectoriesCommand = new() { "ls", "cd", "find", "cp", "rmdir", "rm -r"};
+    private readonly List<string> filesCommands = new() { "rm", "cat", "cp", "tail", "head" };
     /// <summary>
     /// Finds all the appropriate suggestions depending on the given command
     /// does not check if the suggestions match the input
@@ -72,10 +74,11 @@ public class Autocomplete
     private List<string> AllSuggestions(string command)
     {
         List<string> results = new();
-        if (command.StartsWith("ls"))
+        string commandName = command.Split(" ", 2).First();
+        if (subdirectoriesCommand.Contains(commandName))
             results.AddRange(Subdirectories());
-        else if (command.StartsWith("cd"))
-            results.AddRange(Subdirectories());
+        if (filesCommands.Contains(commandName))
+            results.AddRange(FilesInDirectory());
         return results;
     }
 

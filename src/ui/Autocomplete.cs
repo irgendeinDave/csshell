@@ -109,6 +109,7 @@ public class Autocomplete
 
         return dirs;
     }
+    // TODO: add git commands
 
     #endregion
 }

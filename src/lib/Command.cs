@@ -60,7 +60,38 @@ public class CommandRunner
                 fullCommand = fullCommand.Replace($"!!", History.StoredCommand(0));
         }
 
-        if (run(split(fullCommand)) == 0)
+        Command command = split(fullCommand);
+        command.Arguments = processArguments(command);
+        int exitCode = -1;
+        if (isBuildIn(command))
+        {
+            bi.executeBuiltInCommand(command);
+            exitCode = 0; // assume the process was successful for now
+            return;
+        }
+
+        try
+        {
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = command.CommandName,
+                Arguments = command.Arguments,
+                UseShellExecute = false
+            };
+
+            Process runningCommand = Process.Start(psi);
+            runningCommand.WaitForExit();
+            exitCode = runningCommand.ExitCode;
+
+            Environment.SetEnvironmentVariable("?", exitCode.ToString());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{command.CommandName} could not be executed: {e.Message}");
+            Environment.SetEnvironmentVariable("?", "2");
+        }
+
+        if (exitCode == 0)
             History.Append(fullCommand);
     }
 

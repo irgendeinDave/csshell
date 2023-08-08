@@ -62,50 +62,21 @@ public class CommandRunner
 
         Command command = split(fullCommand);
         command.Arguments = processArguments(command);
-        int exitCode = -1;
         if (isBuildIn(command))
         {
             bi.executeBuiltInCommand(command);
-            exitCode = 0; // assume the process was successful for now
             return;
         }
 
-        try
-        {
-            ProcessStartInfo psi = new ProcessStartInfo
-            {
-                FileName = command.CommandName,
-                Arguments = command.Arguments,
-                UseShellExecute = false
-            };
-
-            Process runningCommand = Process.Start(psi);
-            runningCommand.WaitForExit();
-            exitCode = runningCommand.ExitCode;
-
-            Environment.SetEnvironmentVariable("?", exitCode.ToString());
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"{command.CommandName} could not be executed: {e.Message}");
-            Environment.SetEnvironmentVariable("?", "2");
-        }
+        int exitCode = execute(command);
+        Environment.SetEnvironmentVariable("?", exitCode.ToString());
 
         if (exitCode == 0)
             History.Append(fullCommand);
     }
 
-    /// <returns> the exit code of the command </returns>
-    private int run(Command command)
+    private int execute(Command command)
     {
-        command.Arguments = processArguments(command);
-
-        if (isBuildIn(command))
-        {
-            bi.executeBuiltInCommand(command);
-            return 0; // assume the process was successful for now
-        }
-
         try
         {
             ProcessStartInfo psi = new ProcessStartInfo
@@ -117,20 +88,43 @@ public class CommandRunner
 
             Process runningCommand = Process.Start(psi);
             runningCommand.WaitForExit();
-            int exitCode = runningCommand.ExitCode;
-
-            Environment.SetEnvironmentVariable("?", exitCode.ToString());
-            return exitCode;
+            return runningCommand.ExitCode;
         }
         catch (Exception e)
         {
             Console.WriteLine($"{command.CommandName} could not be executed: {e.Message}");
-            Environment.SetEnvironmentVariable("?", "2");
+            return 2;
         }
-
-        return 1;
     }
 
+    private int execute(Command command, out string stdOutput, out string stdError)
+    {
+        try
+        {
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = command.CommandName,
+                Arguments = command.Arguments,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
+
+            Process runningCommand = Process.Start(psi);
+            runningCommand.WaitForExit();
+            stdOutput = runningCommand.StandardOutput.ReadToEnd();
+            stdError = runningCommand.StandardError.ReadToEnd();
+            return runningCommand.ExitCode;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"{command.CommandName} could not be executed: {e.Message}");
+            stdError = string.Empty;
+            stdOutput = String.Empty;
+            return 2;
+        }
+    }
+    
     // split the command into program name and arguments
     private Command split(string fullCommand)
     {

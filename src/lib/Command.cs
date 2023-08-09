@@ -24,56 +24,75 @@ public class CommandRunner
     public void runLine(string fullCommand)
     {
         List<string> commands = fullCommand.Trim(';').Split(';').ToList();
-        foreach (string command in commands)
+        foreach (string commandSplit in commands)
         {
-            run(command.Trim());
+            string seperatedCommand = commandSplit.Trim();
+            // ignore comments
+            if (seperatedCommand.StartsWith("#") || seperatedCommand.StartsWith("//"))
+                return;
+
+            // replace alias keywords with the actual commands
+            seperatedCommand = am.applyAliases(seperatedCommand);
+
+            // do not run empty commands
+            if (seperatedCommand.Trim() == string.Empty)
+                return;
+
+            // apply !! operator
+            int doubleExclamationMarkPos = seperatedCommand.IndexOf("!!");
+            if (doubleExclamationMarkPos > -1)
+            {
+                if (doubleExclamationMarkPos < seperatedCommand.Length - 2)
+                {
+                    if (int.TryParse(new ReadOnlySpan<char>(seperatedCommand[doubleExclamationMarkPos + 2]), out int index))
+                    {
+                        seperatedCommand = seperatedCommand.Replace($"!!{index}", History.StoredCommand(index));
+                    }
+                } // No index given and !! at the end of the command
+                else
+                    seperatedCommand = seperatedCommand.Replace($"!!", History.StoredCommand(0));
+            }
+        
+            // execute the command
+            Command command = split(seperatedCommand);
+            command.Arguments = processArguments(command);
+            if (isBuildIn(command))
+            {
+                bi.executeBuiltInCommand(command);
+                return;
+            }
+
+            int exitCode;
+            // pipes
+            if (fullCommand.Contains('|'))
+            {
+                string firstCommand = fullCommand[..seperatedCommand.IndexOf(' ')];
+                string secondCommand = fullCommand[(seperatedCommand.IndexOf('|') + 1)..].Trim();
+
+                command = split(firstCommand);
+
+                exitCode = execute(command, out string output, out string error);
+                if (error != string.Empty)
+                {
+                    Console.Write(error);
+                    Environment.SetEnvironmentVariable("?", exitCode.ToString());
+                    continue;
+                }
+
+                exitCode = execute(split($"{secondCommand} {output}"));
+                Environment.SetEnvironmentVariable("?", exitCode.ToString());
+                if (exitCode == 0)
+                    History.Append(seperatedCommand);
+                continue;
+            }
+
+            exitCode = execute(command);
+            if (exitCode == 0)
+                History.Append(seperatedCommand);
         }
     }
 
     private readonly List<string> builtInCommands = new() { "cd", "exit", "set", "alias" };
-
-    private void run(string fullCommand)
-    {
-        // ignore comments
-        if (fullCommand.StartsWith("#") || fullCommand.StartsWith("//"))
-            return;
-
-        // replace alias keywords with the actual commands
-        fullCommand = am.applyAliases(fullCommand);
-
-        // do not run empty commands
-        if (fullCommand.Trim() == string.Empty)
-            return;
-
-        // apply !! operator
-        int doubleExclamationMarkPos = fullCommand.IndexOf("!!");
-        if (doubleExclamationMarkPos > -1)
-        {
-            if (doubleExclamationMarkPos < fullCommand.Length - 2)
-            {
-                if (int.TryParse(new ReadOnlySpan<char>(fullCommand[doubleExclamationMarkPos + 2]), out int index))
-                {
-                    fullCommand = fullCommand.Replace($"!!{index}", History.StoredCommand(index));
-                }
-            } // No index given and !! at the end of the command
-            else
-                fullCommand = fullCommand.Replace($"!!", History.StoredCommand(0));
-        }
-
-        Command command = split(fullCommand);
-        command.Arguments = processArguments(command);
-        if (isBuildIn(command))
-        {
-            bi.executeBuiltInCommand(command);
-            return;
-        }
-
-        int exitCode = execute(command);
-        Environment.SetEnvironmentVariable("?", exitCode.ToString());
-
-        if (exitCode == 0)
-            History.Append(fullCommand);
-    }
 
     private int execute(Command command)
     {
@@ -93,7 +112,7 @@ public class CommandRunner
         catch (Exception e)
         {
             Console.WriteLine($"{command.CommandName} could not be executed: {e.Message}");
-            return 2;
+            return 1;
         }
     }
 
@@ -118,10 +137,9 @@ public class CommandRunner
         }
         catch (Exception e)
         {
-            Console.WriteLine($"{command.CommandName} could not be executed: {e.Message}");
-            stdError = string.Empty;
+            stdError = $"{command.CommandName} could not be executed: {e.Message}";
             stdOutput = String.Empty;
-            return 2;
+            return 1;
         }
     }
     

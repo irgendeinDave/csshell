@@ -66,7 +66,8 @@ public class CommandRunner
             // pipes
             if (fullCommand.Contains('|'))
             {
-                string firstCommand = fullCommand[..seperatedCommand.IndexOf(' ')];
+                string processedCommand = seperatedCommand;
+                string firstCommand = fullCommand[..seperatedCommand.IndexOf('|')].Trim();
                 string secondCommand = fullCommand[(seperatedCommand.IndexOf('|') + 1)..].Trim();
 
                 command = split(firstCommand);

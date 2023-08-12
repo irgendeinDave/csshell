@@ -22,11 +22,19 @@ csshell. When the script ends this instance will end automatically
 
 To create an environment variable use the `set`-keyword followed by the name, an equal sign and the value without any
 spaces in between. Examle: `set test=testvalue`.
-To read this value use a dollar sign followed by the name of the variable.
+To read this value use a dollar sign followed by the name of the variable. To append other characters, end the name of the variable by another dollar sign. To read multiple variables in one command put a space between them.
+
+### Prompt
+
+You can customize your prompt by setting the environment variable PROMPT to a custom value. The shell predefines the value RELPWD as your working directory relative to your home directory. The default value is set to "$ ".
 
 ### Exit Codes
 
 Exit codes can be saved in the `?` environment variable.
+
+### Pipes
+
+You can pipe the raw output of a command by using a `|` followed by a second command. The output of the first command will be appended to the second command.
 
 ## Usage
 

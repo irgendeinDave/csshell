@@ -23,7 +23,6 @@ public class Program
 
         while (true)
         {
-            string s = Environment.GetEnvironmentVariable("PROPMT");
             Console.Write(Settings.Prompt());
 
             string input = inputReader.readInput();

@@ -26,35 +26,35 @@ public class CommandRunner
         List<string> commands = fullCommand.Trim(';').Split(';').ToList();
         foreach (string commandSplit in commands)
         {
-            string seperatedCommand = commandSplit.Trim();
+            string separatedCommand = commandSplit.Trim();
             // ignore comments
-            if (seperatedCommand.StartsWith("#") || seperatedCommand.StartsWith("//"))
+            if (separatedCommand.StartsWith("#") || separatedCommand.StartsWith("//"))
                 return;
 
             // replace alias keywords with the actual commands
-            seperatedCommand = am.applyAliases(seperatedCommand);
+            separatedCommand = am.applyAliases(separatedCommand);
 
             // do not run empty commands
-            if (seperatedCommand.Trim() == string.Empty)
+            if (separatedCommand.Trim() == string.Empty)
                 return;
 
             // apply !! operator
-            int doubleExclamationMarkPos = seperatedCommand.IndexOf("!!");
+            int doubleExclamationMarkPos = separatedCommand.IndexOf("!!");
             if (doubleExclamationMarkPos > -1)
             {
-                if (doubleExclamationMarkPos < seperatedCommand.Length - 2)
+                if (doubleExclamationMarkPos < separatedCommand.Length - 2)
                 {
-                    if (int.TryParse(new ReadOnlySpan<char>(seperatedCommand[doubleExclamationMarkPos + 2]), out int index))
+                    if (int.TryParse(new ReadOnlySpan<char>(separatedCommand[doubleExclamationMarkPos + 2]), out int index))
                     {
-                        seperatedCommand = seperatedCommand.Replace($"!!{index}", History.StoredCommand(index));
+                        separatedCommand = separatedCommand.Replace($"!!{index}", History.StoredCommand(index));
                     }
                 } // No index given and !! at the end of the command
                 else
-                    seperatedCommand = seperatedCommand.Replace($"!!", History.StoredCommand(0));
+                    separatedCommand = separatedCommand.Replace($"!!", History.StoredCommand(0));
             }
         
             // execute the command
-            Command command = split(seperatedCommand);
+            Command command = split(separatedCommand);
             command.Arguments = processArguments(command);
             if (isBuildIn(command))
             {
@@ -66,9 +66,8 @@ public class CommandRunner
             // pipes
             if (fullCommand.Contains('|'))
             {
-                string processedCommand = seperatedCommand;
-                string firstCommand = fullCommand[..seperatedCommand.IndexOf('|')].Trim();
-                string secondCommand = fullCommand[(seperatedCommand.IndexOf('|') + 1)..].Trim();
+                string firstCommand = separatedCommand[..separatedCommand.IndexOf('|')].Trim();
+                string secondCommand = separatedCommand[(separatedCommand.IndexOf('|') + 1)..].Trim();
 
                 command = split(firstCommand);
 
@@ -83,13 +82,13 @@ public class CommandRunner
                 exitCode = execute(split($"{secondCommand} {output}"));
                 Environment.SetEnvironmentVariable("?", exitCode.ToString());
                 if (exitCode == 0)
-                    History.Append(seperatedCommand);
+                    History.Append(separatedCommand);
                 continue;
             }
 
             exitCode = execute(command);
             if (exitCode == 0)
-                History.Append(seperatedCommand);
+                History.Append(separatedCommand);
         }
     }
 

@@ -56,7 +56,7 @@ public class CommandRunner
             // execute the command
             Command command = split(separatedCommand);
             command.Arguments = processArguments(command);
-            if (isBuildIn(command))
+            if (isBuiltIn(command))
             {
                 bi.executeBuiltInCommand(command);
                 return;
@@ -157,7 +157,7 @@ public class CommandRunner
         return new Command(cmd, args);
     }
 
-    private bool isBuildIn(Command command)
+    private bool isBuiltIn(Command command)
     {
         foreach (string cmd in builtInCommands)
         {
@@ -175,7 +175,7 @@ public class CommandRunner
     private string processArguments(Command command)
     {
         string args = String.Empty;
-        string[] split = command.Arguments.Split(' ');
+        List<string> split = Util.splitCommand(command.Arguments);
 
         // variables
         foreach (string arg in split)

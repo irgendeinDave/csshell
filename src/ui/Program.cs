@@ -1,4 +1,5 @@
 ﻿using CommandExecution;
+using CommandProcessing;
 using InputReader;
 using EnvironmentSetup;
 
@@ -23,7 +24,7 @@ public class Program
 
         while (true)
         {
-            Console.Write(Settings.Prompt());
+            Console.Write(CommandProcessor.processArguments(Settings.Prompt()));
 
             string input = inputReader.readInput();
             if (string.IsNullOrEmpty(input))

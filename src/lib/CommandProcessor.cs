@@ -142,6 +142,12 @@ public static class CommandProcessor
         }
         return args;
     }
+
+    // overload method used to process the prompt
+    public static string processArguments(string command)
+    {
+        return processArguments(new Command("", command));
+    }
     
     private static bool isBuiltIn(Command command)
     {

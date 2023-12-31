@@ -24,7 +24,7 @@ public class Program
 
         while (true)
         {
-            Console.Write(CommandProcessor.processArguments(Settings.Prompt()));
+            Console.Write(Settings.Prompt());
 
             string input = inputReader.readInput();
             if (string.IsNullOrEmpty(input))

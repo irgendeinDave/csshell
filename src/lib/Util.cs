@@ -5,7 +5,7 @@ public static class Util
     {
         if (UserHome.Length + 1 <= fullPath.Length)
             return "~/" + fullPath[(UserHome.Length + 1)..];
-        else return "~";
+        return "~";
     }
 
     public static readonly string UserHome = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);

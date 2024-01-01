@@ -3,6 +3,9 @@ public static class Util
     public static string RelativePath(string fullPath, string pwd) => fullPath[(pwd.Length + 1)..];
     public static string RelativePathToHome(string fullPath)
     {
+        if (!fullPath.StartsWith(Environment.GetEnvironmentVariable("HOME")!))
+            return fullPath;
+        
         if (UserHome.Length + 1 <= fullPath.Length)
             return "~/" + fullPath[(UserHome.Length + 1)..];
         return "~";

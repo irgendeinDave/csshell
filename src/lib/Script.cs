@@ -16,7 +16,7 @@ public static class Script
     private static void ParseFile(string[] fileContent)
     {
         List<string> currentPackage = new();
-        
+        List<string> mainPackage = new(); // all commands that dont't belong in any package
         for(int i = 0; i < fileContent.Length; ++i)
         {
             // functions
@@ -32,9 +32,11 @@ public static class Script
                     ++i;
                 }
                 ++i;
-                commandPackages.Add(getFunctionName(packageName), currentPackage);
+                commandPackages.Add(packageName, currentPackage);
             }
+            mainPackage.Add(fileContent[i]);
         }
+        commandPackages.Add("Main", mainPackage);
     }
 
     private static string getFunctionName(string line)

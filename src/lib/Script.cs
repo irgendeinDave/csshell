@@ -7,8 +7,14 @@ public static class Script
     {
         string[] lines = File.ReadAllLines(path);
         ParseFile(lines);
-        //TODO: Run commands
-
+        
+        //start to execute the main package
+        //TODO: make sure that Main exists
+        foreach (var command in commandPackages["Main"])
+        {
+            cr.runLine(command);
+        }
+        
         if (path != Settings.RcFilePath)
             Environment.Exit(0);
     }

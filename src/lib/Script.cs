@@ -10,10 +10,7 @@ public static class Script
         
         //start to execute the main package
         //TODO: make sure that Main exists
-        foreach (var command in commandPackages["Main"])
-        {
-            cr.runLine(command);
-        }
+        runCommandPackage("Main", cr);
         
         if (path != Settings.RcFilePath)
             Environment.Exit(0);
@@ -48,5 +45,16 @@ public static class Script
     private static string getFunctionName(string line)
     {
         return line.Substring(3);
+    }
+
+    private static void runCommandPackage(string name, CommandRunner cr)
+    {
+        foreach (var command in commandPackages["Main"])
+        {
+            if (command.StartsWith("run ") && commandPackages.ContainsKey(command.Substring(4)))
+                runCommandPackage(command, cr);
+                
+            cr.runLine(command);
+        }
     }
 }

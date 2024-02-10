@@ -36,6 +36,11 @@ Exit codes can be saved in the `?` environment variable.
 
 You can pipe the raw output of a command by using a `|` followed by a second command. The output of the first command will be appended to the second command.
 
+## Scripts
+
+### Functions
+You can create functions using `fun functionname` and the contained commands until  the function is ended with `end`. Functions are called with `run functionname`. Functions can be called recursively but only without parameters.
+
 ## Usage
 
 Clone the repository and compile it using the `dotnet build` command. The shell can be started by running it in another

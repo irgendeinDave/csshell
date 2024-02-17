@@ -58,3 +58,5 @@ public static class Script
         }
     }
 }
+
+public record function(string Name, List<string> Package, List<string> Parameters);

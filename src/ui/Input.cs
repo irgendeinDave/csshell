@@ -30,10 +30,13 @@ public class InputManager
             {
                 applyAutocomplete();
             }
-            else if (keyInfo.Key == ConsoleKey.Backspace && Console.GetCursorPosition().Left > Settings.Prompt().Length)
+            else if (keyInfo.Key == ConsoleKey.Backspace)
             {
-                Console.Write("\b \b");
-                currentCommand.Length--;
+                if (Console.GetCursorPosition().Left > Settings.Prompt().Length)
+                {
+                    Console.Write("\b \b"); 
+                    currentCommand.Length--;
+                }
             }
             else
             {

@@ -95,7 +95,6 @@ public static class CommandProcessor
             // two dollar signs can be used to give the range of a variable name
             if (arg.Contains('$'))
             {
-                 
                 int dsPosition = arg.IndexOf('$'); // can't be -1 because of the if statement above
                 int secondDs = arg.Substring(dsPosition + 1).IndexOf('$') + dsPosition;
                 string? value;

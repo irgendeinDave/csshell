@@ -3,6 +3,7 @@ namespace Autocompletion;
 public class Autocomplete
 {
     private int elementsToRequest;
+    private string commandEnding;
 
     public int ElementsToRequest
     {
@@ -25,6 +26,8 @@ public class Autocomplete
     ///</summary>
     public string AutocompleteResult(string commandEnding, string fullCommand)
     {
+        this.commandEnding = commandEnding;
+        
         List<string> results = AllSuggestions(fullCommand);
         List<string> matchingResults = new();
         foreach (string result in results)
@@ -63,8 +66,9 @@ public class Autocomplete
 
     #region Methods to get List from different sources
 
-    private readonly List<string> subdirectoriesCommand = new() { "ls", "cd", "find", "cp", "rmdir", "rm -r"};
+    private readonly List<string> subdirectoriesCommands = new() { "ls", "cd", "find", "cp", "rmdir", "rm -r"};
     private readonly List<string> filesCommands = new() { "rm", "cat", "cp", "tail", "head" };
+    
     /// <summary>
     /// Finds all the appropriate suggestions depending on the given command
     /// does not check if the suggestions match the input
@@ -75,22 +79,32 @@ public class Autocomplete
     {
         List<string> results = new();
         string commandName = command.Split(" ", 2).First();
-        if (subdirectoriesCommand.Contains(commandName))
+        if (subdirectoriesCommands.Contains(commandName))
             results.AddRange(Subdirectories());
         if (filesCommands.Contains(commandName))
+        {
             results.AddRange(FilesInDirectory());
+            results.AddRange(Subdirectories()); //include also files in subdirectories -> add subdirectories for commands that need files
+        }
         return results;
     }
 
-    private static List<string> GitCommands()
+    private  List<string> GitCommands()
     {
         return new();
     }
 
-    // TODO: use relative paths for files and directories
-    private static List<string> FilesInDirectory()
+    private string relativeSearchPath()
     {
-        List<string> files = Directory.EnumerateFiles(Directory.GetCurrentDirectory()).ToList();
+        int lastPathSeparatorPosition = commandEnding.LastIndexOf('/');
+        if (lastPathSeparatorPosition == -1)
+            return "";
+        return commandEnding.Substring(0, lastPathSeparatorPosition);
+    }
+    
+    private List<string> FilesInDirectory()
+    {
+        List<string> files = Directory.EnumerateFiles($"{Directory.GetCurrentDirectory()}/{relativeSearchPath()}").ToList();
         for (int i = 0; i < files.Count; i++)
         {
             files[i] = Util.RelativePath(files[i], Directory.GetCurrentDirectory());
@@ -99,9 +113,9 @@ public class Autocomplete
         return files;
     }
 
-    private static List<string> Subdirectories()
+    private List<string> Subdirectories()
     {
-        List<string> dirs = Directory.EnumerateDirectories(Directory.GetCurrentDirectory()).ToList();
+        List<string> dirs = Directory.EnumerateDirectories($"{Directory.GetCurrentDirectory()}/{relativeSearchPath()}").ToList();
         for (int i = 0; i < dirs.Count; i++)
         {
             dirs[i] = Util.RelativePath(dirs[i], Directory.GetCurrentDirectory()) + "/";

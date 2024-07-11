@@ -25,7 +25,6 @@ public class InputManager
                 Console.WriteLine();
                 return currentCommand.ToString();
             }
-
             if (keyInfo.Key == ConsoleKey.Tab)
             {
                 applyAutocomplete();
@@ -69,7 +68,6 @@ public class InputManager
                     Console.Write("-");
                     currentCommand.Append("-");
                 }
-
                 return;
             }
             // BUG: Replace will replace all instances of the last element
